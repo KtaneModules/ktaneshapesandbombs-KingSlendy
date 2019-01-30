@@ -72,10 +72,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HighlightPrefab: {fileID: 100000, guid: d78a484c6e87f1b47b6596ac080fe942, type: 2}
   AudioClips:
-  - {fileID: 8300000, guid: 033be5be17f345d4a9b369b2cf29fcd2, type: 3}
-  - {fileID: 8300000, guid: 2969d02ce63f60d48b2db323991f89ce, type: 3}
-  - {fileID: 8300000, guid: 58244ca530bcc0e45a8789a092435a7f, type: 3}
-  - {fileID: 8300000, guid: 3a11a1a5d84080e4b99abb986c4cc9cd, type: 3}
-  - {fileID: 8300000, guid: 24d7b71aaa38a334c919e28fbf85713e, type: 3}
+  - {fileID: 8300000, guid: 334c2162aef0b5b4e852049fff88fb92, type: 3}
+  - {fileID: 8300000, guid: fbc9b4f28b240364ab4a34caceb31a0c, type: 3}
+  - {fileID: 8300000, guid: 9e3e3a593e3f5a94ca7a2e30ab2b2aa5, type: 3}
+  - {fileID: 8300000, guid: 2317659650a304e4d86800b97d1c6e13, type: 3}
+  - {fileID: 8300000, guid: 02000257ff10e0d498aac75e0d7df08b, type: 3}
   - {fileID: 8300000, guid: 9be32317b2ab81e4b8e7a195df2bffbf, type: 3}
   EdgeworkConfiguration: {fileID: 0}
