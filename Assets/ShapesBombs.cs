@@ -25,8 +25,8 @@ public class ShapesBombs : MonoBehaviour {
 	Color[] randomColors = { Color.yellow, Color.green, Color.cyan, Color.blue, Color.magenta, Color.white };
 	Color buttonOFF = new Color32(50, 50, 50, 255);
 	Color buttonsColor = Color.black;
-	Light[] buttonLight = new Light[40];
-	float lightIntens = 20.0f;
+	readonly Light[] buttonLight = new Light[40];
+	readonly float lightIntens = 20.0f;
 	MonoRandom rnd;
 
 	List<int> pickedValues = new List<int>();
@@ -194,7 +194,7 @@ public class ShapesBombs : MonoBehaviour {
 		};
 
 		int[] sequenceTables = new int[5];
-		string[] letterTables = { "", "", "", "", "" };
+		string[] letterTables = Enumerable.Repeat("", 5).ToArray();
 		intShape = chooseShapes.Take(20).ToArray();
 
 		if (rnd.Seed == 1) {

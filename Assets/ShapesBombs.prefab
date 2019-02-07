@@ -23,9 +23,9 @@ GameObject:
   - component: {fileID: 114814510234676986}
   - component: {fileID: 114655001547342484}
   - component: {fileID: 114582566977693842}
-  - component: {fileID: 114826124148369616}
   - component: {fileID: 114065898060668376}
   - component: {fileID: 114516278425515554}
+  - component: {fileID: 114826124148369616}
   m_Layer: 0
   m_Name: ShapesBombs
   m_TagString: Untagged
