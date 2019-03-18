@@ -35,6 +35,7 @@ public class ShapesBombs : MonoBehaviour {
 	Coroutine arrowCoroutine, nowCoroutine, subCoroutine;
 
 	string[] intShape;
+    int selectLetter;
 	string myShape = "";
 	string modLetter = "";
 	string shapeSolution = "";
@@ -179,7 +180,7 @@ public class ShapesBombs : MonoBehaviour {
 			"XXOXXXOOOXOXOXOXXOXXXXOXXXXOXXXXOXXXXOXX"
 		};
 			
-		var selectLetter = Random.Range(0, intLetter.Length);
+		selectLetter = Random.Range(0, intLetter.Length);
 		var onSqrCount = intLetter[selectLetter].Count(x => x == 'O');
 		var offSqrCount = intLetter[selectLetter].Count(x => x == 'X');
 		rnd = RuleSeedable.GetRNG();
