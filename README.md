@@ -1,1 +1,1 @@
-Shapes And Bombs regular module for KTaNE
+#[ModKit Wiki](../../wiki)

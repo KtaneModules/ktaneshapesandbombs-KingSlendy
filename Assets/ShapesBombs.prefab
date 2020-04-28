@@ -618,7 +618,6 @@ GameObject:
   - component: {fileID: 4681322192431286}
   - component: {fileID: 33033914957941548}
   - component: {fileID: 23044781678421752}
-  - component: {fileID: 95917267981625674}
   - component: {fileID: 114301210599243890}
   m_Layer: 0
   m_Name: Component_PuzzleBackground
@@ -5709,23 +5708,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1598154622504260}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!95 &95917267981625674
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1285868646414750}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 1c46642b7f907d844bcdfcca8625afdd, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
 --- !u!102 &102126754012823372
 TextMesh:
   serializedVersion: 3
@@ -5988,7 +5970,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1008967911642508}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 361fec72679db594a8e9be2f11ffef52, type: 3}
+  m_Script: {fileID: 11500000, guid: adf69c2de51bd3c43bbd9bc22578ee08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _seed: 1
