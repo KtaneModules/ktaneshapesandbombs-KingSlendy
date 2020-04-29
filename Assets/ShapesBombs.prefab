@@ -5819,7 +5819,7 @@ Light:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1618088435438998}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 8
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -6949,7 +6949,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1cfb889a07d5fd4e9baed7960bb397f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _colorblindMode: 0
+  _colorblindMode: 1
 --- !u!114 &114519819976217386
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7856,7 +7856,8 @@ MonoBehaviour:
   ColorblindMode: {fileID: 114516278425515554}
   LightTemp: {fileID: 108637611082865850}
   ArrowScreen: {fileID: 1862968809349614}
-  finishMat: {fileID: 2100000, guid: 39fb55e258a584d4ab225b769c4df795, type: 2}
+  ArrowScreenMat: {fileID: 2100000, guid: 9731edfe31118a5479a8cf33ba835c06, type: 2}
+  BlackMat: {fileID: 2100000, guid: 91927fd57c7f17f4ca5f2368870a85c0, type: 2}
   ArrowTex:
   - {fileID: 2800000, guid: 7ef52f96338159c468f1d1877f02425f, type: 3}
   - {fileID: 2800000, guid: a17a834cddbc6dd418fba0e277e97ceb, type: 3}

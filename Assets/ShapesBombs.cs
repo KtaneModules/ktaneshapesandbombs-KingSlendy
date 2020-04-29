@@ -19,7 +19,8 @@ public class ShapesBombs : MonoBehaviour {
 	public KMColorblindMode ColorblindMode;
 	public Light LightTemp;
 	public GameObject ArrowScreen;
-    public Material finishMat;
+    public Material ArrowScreenMat;
+    public Material BlackMat;
 	public Texture2D[] ArrowTex = new Texture2D[0];
 	public GameObject ColScreen;
 
@@ -58,8 +59,8 @@ public class ShapesBombs : MonoBehaviour {
 		moduleId = moduleIdCounter++;
 		string[] choseColor = { "Yellow", "Green", "Cyan", "Blue", "Purple", "White" };
 		int chooseRndColor = Random.Range(0, randomColors.Length);
-		buttonsColor = randomColors[chooseRndColor];
-		ColScreen.transform.GetChild(0).GetComponent<TextMesh>().text = choseColor[chooseRndColor];
+        ColScreen.transform.GetChild(0).GetComponent<TextMesh>().text = "";
+        buttonsColor = randomColors[chooseRndColor];
 		char[] moduleLetters = { 'A', 'B', 'D', 'E', 'G', 'I', 'K', 'L', 'N', 'O', 'P', 'S', 'T', 'X', 'Y' };
 
         string[] intLetter = {
@@ -254,7 +255,10 @@ public class ShapesBombs : MonoBehaviour {
 			
 		myShape = intLetter[selectLetter];
 		modLetter = myShape;
-		int[] arrowDirVal = { 0, 1, -5, -1, 5, -4, 6, -6, 4 };
+
+        ArrowScreen.transform.GetComponent<Renderer>().material = BlackMat;
+        NumScreen.transform.GetChild(0).GetComponent<TextMesh>().text = "";
+        int[] arrowDirVal = { 0, 1, -5, -1, 5, -4, 6, -6, 4 };
 		var logArrows = "";
 
 		for (int i = 0; i < chooseArrows.Length; i++) {
@@ -297,7 +301,6 @@ public class ShapesBombs : MonoBehaviour {
 			}
 		}
 
-		arrowCoroutine = StartCoroutine(SetArrowScreen());
 		getCount = ((x, y) => x.Count(z => z == y));
 		countUnlit = (int.Parse(BombInfo.GetSerialNumber()[5].ToString())) % 2 == 1;
 		countHalf = ((Array.FindIndex(intFullLetter, x => x.Equals(moduleLetters[selectLetter]))) % 2 == 0);
@@ -321,10 +324,6 @@ public class ShapesBombs : MonoBehaviour {
 			nowLight.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 			nowLight.range = 0.01f * lightScalar;
 			nowLight.intensity = 0.0f;
-
-			if (intLetter[selectLetter][i].Equals('O')) {
-				AssignButtonColor(i, false);
-			}
 
 			int j = i;
 
@@ -370,7 +369,7 @@ public class ShapesBombs : MonoBehaviour {
 								StopAllCoroutines();
 								Debug.LogFormat(@"[Shapes Bombs #{0}] Module solved!", moduleId);
                                 BombAudio.PlaySoundAtTransform("CorrectShape", transform);
-                                ArrowScreen.transform.GetComponent<Renderer>().material = finishMat;
+                                ArrowScreen.transform.GetComponent<Renderer>().material = BlackMat;
                                 NumScreen.transform.GetChild(0).GetComponent<TextMesh>().text = "";
                                 moduleSolved = true;
 								BombModule.HandlePass();
@@ -390,7 +389,25 @@ public class ShapesBombs : MonoBehaviour {
 				return false;
 			};
 		}
+
+        BombModule.OnActivate += Activate;
 	}
+
+    void Activate()
+    {
+        string[] choseColor = { "Yellow", "Green", "Cyan", "Blue", "Purple", "White" };
+        ColScreen.transform.GetChild(0).GetComponent<TextMesh>().text = choseColor[Array.IndexOf(randomColors, buttonsColor)];
+        ArrowScreen.transform.GetComponent<Renderer>().material = ArrowScreenMat;
+        arrowCoroutine = StartCoroutine(SetArrowScreen());
+        for (int i = 0; i < ModuleButtons.Length; i++)
+        {
+            buttonLight[i].enabled = true;
+            if (myShape[i].Equals('O'))
+            {
+                AssignButtonColor(i, false);
+            }
+        }
+    }
 
 	void Update() {
 		if (!moduleSolved) {
