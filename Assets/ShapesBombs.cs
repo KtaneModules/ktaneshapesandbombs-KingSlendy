@@ -19,6 +19,7 @@ public class ShapesBombs : MonoBehaviour {
 	public KMColorblindMode ColorblindMode;
 	public Light LightTemp;
 	public GameObject ArrowScreen;
+    public Material finishMat;
 	public Texture2D[] ArrowTex = new Texture2D[0];
 	public GameObject ColScreen;
 
@@ -368,8 +369,10 @@ public class ShapesBombs : MonoBehaviour {
 							if (myShape.Equals(shapeSolution)) {
 								StopAllCoroutines();
 								Debug.LogFormat(@"[Shapes Bombs #{0}] Module solved!", moduleId);
-								BombAudio.PlaySoundAtTransform("CorrectShape", transform);
-								moduleSolved = true;
+                                BombAudio.PlaySoundAtTransform("CorrectShape", transform);
+                                ArrowScreen.transform.GetComponent<Renderer>().material = finishMat;
+                                NumScreen.transform.GetChild(0).GetComponent<TextMesh>().text = "";
+                                moduleSolved = true;
 								BombModule.HandlePass();
 							} else {
 								var solvedModsEven = (solvedMods % 2 == 0);
