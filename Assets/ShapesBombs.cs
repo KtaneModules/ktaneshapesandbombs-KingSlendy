@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using KMBombInfoHelper;
 using UnityEngine;
+using KModkit;
 
 using Random = UnityEngine.Random;
 using Math = UnityEngine.Mathf;
@@ -19,6 +19,8 @@ public class ShapesBombs : MonoBehaviour {
 	public KMColorblindMode ColorblindMode;
 	public Light LightTemp;
 	public GameObject ArrowScreen;
+    public Material ArrowScreenMat;
+    public Material BlackMat;
 	public Texture2D[] ArrowTex = new Texture2D[0];
 	public GameObject ColScreen;
 
@@ -39,8 +41,9 @@ public class ShapesBombs : MonoBehaviour {
 	string myShape = "";
 	string modLetter = "";
 	string shapeSolution = "";
+    bool updating = false;
 
-	delegate int checkCount(string x, char y);
+    delegate int checkCount(string x, char y);
 
 	checkCount getCount;
 	bool countUnlit, countHalf;
@@ -56,131 +59,132 @@ public class ShapesBombs : MonoBehaviour {
 		moduleId = moduleIdCounter++;
 		string[] choseColor = { "Yellow", "Green", "Cyan", "Blue", "Purple", "White" };
 		int chooseRndColor = Random.Range(0, randomColors.Length);
-		buttonsColor = randomColors[chooseRndColor];
-		ColScreen.transform.GetChild(0).GetComponent<TextMesh>().text = choseColor[chooseRndColor];
+        ColScreen.transform.GetChild(0).GetComponent<TextMesh>().text = "";
+        buttonsColor = randomColors[chooseRndColor];
 		char[] moduleLetters = { 'A', 'B', 'D', 'E', 'G', 'I', 'K', 'L', 'N', 'O', 'P', 'S', 'T', 'X', 'Y' };
-		string[] intLetter = {
-			"XOOOXOXXXOOXXXOOOOOOOXXXOOXXXOOXXXOOXXXO",
-			"OOOOXOXXXOOXXXOOOOOXOXXXOOXXXOOXXXOOOOOX",
-			"OOOOXOXXXOOXXXOOXXXOOXXXOOXXXOOXXXOOOOOX",
-			"OOOOOOXXXXOXXXXOOOOXOXXXXOXXXXOXXXXOOOOO",
-			"XOOOXOXXXOOXXXXOXXXXOXOOOOXXXOOXXXOXOOOX",
-			"OOOOOXXOXXXXOXXXXOXXXXOXXXXOXXXXOXXOOOOO",
-			"OXXXOOXXOXOXOXXOOXXXOXOXXOXXOXOXXOXOXXXO",
-			"OXXXXOXXXXOXXXXOXXXXOXXXXOXXXXOXXXXOOOOO",
-			"OXXXOOOXXOOXOXOOXOXOOXXOOOXXXOOXXXOOXXXO",
-			"XOOOXOXXXOOXXXOOXXXOOXXXOOXXXOOXXXOXOOOX",
-			"OOOOXOXXXOOXXXOOOOOXOXXXXOXXXXOXXXXOXXXX",
-			"XOOOXOXXXOOXXXXXOOOXXXXXOXXXXOOXXXOXOOOX",
-			"OOOOOXXOXXXXOXXXXOXXXXOXXXXOXXXXOXXXXOXX",
-			"OXXXOXOXOXXOXOXXXOXXXXOXXXOXOXXOXOXOXXXO",
-			"OXXXOXOXOXXOXOXXXOXXXXOXXXXOXXXXOXXXXOXX"
-		};
 
-		string[] chooseShapes = {
-			"XXXXXXXXXXXXXXXOXXXXOXXXOOXOXOOXOXOOOOOO",
-			"XOOOXOXXXOXXXXOXXXOXXXOXXXXOXXXXXXXXXOXX",
-			"XXOXXXOXOXOXXXOXOOOXOXXXOXOXOXXXOXXOOXOO",
-			"XOOOXXXXXOXXXXOXOOOXXXXXOXXXXOXXXXOXOOOX",
-			"OXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOX",
-			"XXOXXXXOXXXXOXXXOOOXOXOXOOOOOOXOOOXXXOXX",
-			"XOOOXOXXXOOXXXOXOXOXOOOOOXOXOXOOOOOXOXOX",
-			"XXXXXXXOOOXXOOOXXOOOXXXOXOXOXXXOOXXXOOXX",
-			"XXOXOOXXOXXXXXXXOOOXXXXXXXOXOOXXXXXOOOOO",
-			"OOXOOOXXXOOXOXOOOXOOOOXOOOXOXOOXXXOOOXOO",
-			"XXXXXXXOXXXXOXXXXOXXXOOOXXXOXXOXOXOOOOOO",
-			"OOOOOOXXXOOXXXOOXOXOOXOXOOXXXOOXXXOOOOOO",
-			"OOOOOXXXOXXXOXXXXXOXOOOOOOXXXXOXXXXOXOOO",
-			"XXXXOXXXOXXXOXXOOXOOOXOXOOXXXOOXXXOOOOOO",
-			"XOXOXOXOOXXXXXXOXOXOOXOXOXXXXXOXOOXXOXOX",
-			"XOXOXOXXXOOXXXOXOOOXOXXXOOOXOOOXXXOXOOOX",
-			"XOXOXXOXOXXXOXXXOXOXOXOXOOXXXOXOXOXXXOXX",
-			"OXOXOOXOXOOXOXOOXOXOOXOXOOXOXOOXOXOOXOXO",
-			"OOOOOXXXXXOOOOOXXXXXOOOOOXXXXXOOOOOXXXXX",
-			"XXOXXXXOXXXXOXXXXOXXXXOXXXXOXXXXXXXXXOXX",
-			"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-			"XXOXXXXXXXXXOXXXXOXXXXOXXXXOXXXXOXXXXOXX",
-			"OXOXOOOOOOOXOXOOOOOOOXOXOOOOOOOXOXOOOOOO",
-			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
-			"XOXOXOXOXOXOXOXXXXXXOXOXOOOOOOXOXOXXXOXX",
-			"OOOOOOXXXOOXXXOOXXXOOXXXOOXXXOOXXXOOOOOO",
-			"XXOXXXXXXXXXOXXXXOXXXOXXXOXXXXOXXXOXOOOX",
-			"XOXOXXXOXXXOXOXXXXXXXXXXXXOXOXXXOXXXOXOX",
-			"OOOOOXXOXXXXOXXOOOOOXXOXXOOOOOOXXXOOOOOO",
-			"OOOOXOXXXOOXXXOOOOOXOXXXXOXXXXOXXXXOXXXX",
-			"OXXXOOOXOOOXOXOOXXXOOXXXOOXXXOOXXXOOXXXO",
-			"XXXXXXOXOXXOXOXXXXXXXXXXXXOOOXOXXXOXXXXX",
-			"XXOXXXOXOXOXXXOXXOXXXXOXXOXXXOXOXOXXXOXX",
-			"XXOXXXOXOXOXXXOOOOOOOOOOOOXXXOXOXOXXXOXX",
-			"OOOOXOXXXOOXXXOOOOOXOXXXOOXXXOOXXXOOOOOX",
-			"XXOXXXOOXXOXOXXXXOXXXXOXXXXOXXXXOXXOOOOO",
-			"OXXXOOXXXOOXXXOOXXXOOXXXOOXXXOOXXXOXOOOX",
-			"XXXXXXXXXXXOXOXXOXOXXXXXXOOOOOXOOOXXXXXX",
-			"OXXXOOXXOXOXOXXOOXXXOXOXXOXXOXOXXOXOXXXO",
-			"XXOXXXXOXXXXOXXXXOXXXXOXXOXOXOXOOOXXXOXX",
-			"OOOOXOXXXOOXXXOOOOOXOOXXXOXOXXOXXOXOXXXO",
-			"OOOOOXXOXXXXOXXXXOXXXXOXXXXOXXXXOXXXXOXX",
-			"XXXXXXOXOXXOXOXXXXXXXXXXXOXXXOXOOOXXXXXX",
-			"XOOOXOXXXOOXXXOOXXXOOXXXOOXOXOXOOOXXXXOO",
-			"XOOOXOXXXOOXXXXXOOOXXXXXOXXXXOOXXXOXOOOX",
-			"XXXOXXXOXXXOXXXXXOXXXXXOXXXOXXXOXXXXXOXX",
-			"XOOOXOXOXOOOOOOOXOXOOXOXOOOXOOOXOXOXOOOX",
-			"XOOOXOXXXOOXXXOOOOOOOXXXOOXXXOOXXXOOXXXO",
-			"OOOOOXXXXOXXXOXXXXOXXXOXXXXOXXXOXXXXOXXX",
-			"OXXXOOXXXOOXXXOOOOOOXXXXOXXXXOXXXXOXXXXO",
-			"XXXXXXXXXXXXXXXXXXXOXXXOOXXOOOXOOOOOOOOO",
-			"OOOOOOXXXXOXXXXOOOOXOXXXXOXXXXOXXXXOXXXX",
-			"XOOOXOXXXOOXXXXOXXXXOXOOOOXXXOOXXXOXOOOX",
-			"OOOOOXXXXXXOOOXOXXXOXOOOXXOOOXOXXXOXOOOX",
-			"XOOOXOXXXXOXXXXOXXXXOOOOXOXXXOOXXXOXOOOX",
-			"OOXOOOXOXOXOXOXOXXXOOXXXOXOXOXOXOXOOOXOO",
-			"XOOOXOXXXOOOOOOXXXXXOXXXOXOOOXOXXXOXOOOX",
-			"OOOOOXXXXOXXXOXXXOXXXXOXXXOXXXOXXXXOOOOO",
-			"OXXXOXOXOXXOXOXXXOXXXXOXXXXOXXXXOXXXXOXX",
-			"XOOOXOXXOOOXOXOOXOXOOXOXOOXOXOOOXXOXOOOX",
-			"XOOOXOXXXOOXXXOOXOXOOXOXOOXXXOOXXXOXOOOX",
-			"XXOXXXOXOXXOXOXOXXXOOXXXOXOXOXXOXOXXXOXX",
-			"XOOOXOXXXOOXXXOXOOOOXXXXOXXXXOXXXXOXXXXO",
-			"OOOOOXOXOXXOXOXXOXOXXOXOXXOXOXXOXOXOOOOO",
-			"OOOOOXOXOXOOOOOXOXOXOOOOOXOXOXOOOOOXOXOX",
-			"XOOOXOXXXOOXXXXOXXXXOXXXXOXXXXOXXXOXOOOX",
-			"OXOXOOXOXOXOXOXXXXXXXXXXXXOXOXOXOXOOXOXO",
-			"XXXXOXXXOXXXOXXOOOXXXXOXXXXOXXXXOXXXXOXX",
-			"XXXXXOOOOOOXXXOOOXOOOXXXOOOOOOOXXXOOOOOO",
-			"OOOOOOXXXXOXXXXOOOOXOXXXXOXXXXOXXXXOOOOO",
-			"OXOXOOXOXOXOXOXXOXOXOXOXOOXOXOXOXOXXOXOX",
-			"OOXOOOXXXOOXXXOOXXXOOXXXOOXXXOOXXXOOOXOO",
-			"XXXXXXXOXXXXOXXXOXOXXOXOXOXXXOOXXXOOOOOO",
-			"OXXXOOXXXOOXXXOOOOOOOXXXOOXXXOOXXXOOXXXO",
-			"OOOOOOOXOOOXOXOOXXXOOXXXOOXOXOOOXOOOOOOO",
-			"OOOOOOXXXXOXXXXOOOOXXXXXOXXXXOXXXXOOOOOX",
-			"XXOXXXOOOXOXOXOXXOXXXXOXXOXOXOXOOOXXXOXX",
-			"XXOXXOOOOOOXOXOOXOXOOOOOOXXOXXXXOXXXXOXX",
-			"XXXXXXXOXXXOXOXXXOXXXXOXXXOXOXXXOXXXXXXX",
-			"OXXXOOOXXOOXOXOOXOXOOXXOOOXXXOOXXXOOXXXO",
-			"OXXXOOXXXOOXXXOOXXXOOXXXOOXXXOXOXOXXXOXX",
-			"OOOOXOXXXOOXXXOOXXXOOXXXOOXXXOOXXXOOOOOX",
-			"XOXOXOXOXOOXOXOOXOXOOXOXOOXOXOOXOXOXOXOX",
-			"XOOOXXOXOXXOOOXXOXOXXOXOXXOXOXXOOOXXXOXX",
-			"OXXXOXOXOXXOXOXXXOXXXXOXXXOXOXXOXOXOXXXO",
-			"XXOXXXOOOXOOOOOXXOXXXXOXXXOOOXOOOOOOXXXO",
-			"OXXXXOXXXXOXXXXOXXXXOXXXXOXXXXOXXXXOOOOO",
-			"XOOOXOOXOOOXOXOOOXOOOXOXOOOXOOOXOXOOOOOO",
-			"XOOOXOXXXOXXXXOXXXOXXXOXXXOXXXOXXXXOOOOO",
-			"XOOOXOXXXOOXXXOXOOOXOXXXOOXXXOOXXXOXOOOX",
-			"OOOOOOXOXOOOXOOOXOXOOXOXOOOXOOOXOXOOOOOO",
-			"XOOOXOXXXOOXXXOOXXXOOXXXOOXXXOOXXXOXOOOX",
-			"OXXXOOXXXOOXXXOOXXXOOXOXOOXOXOOXOXOXOXOX",
-			"OXOXOXOXOXXOXOXXXOXXXXOXXXOXOXXOXOXOXOXO",
-			"OOOOOXXOXXXXOXXXXOXXXXOXXXXOXXXXOXXOOOOO",
-			"XXXXXXXOXXXOOOXOXXXOOOOOOOXXXOOXXXOOOOOO",
-			"XXOXXXOXOXXOXOXXXOXXOXXXOXOXOXXXOXXXXOXX",
-			"XXXOXXXXOXOOOOOXXOOXXOXOXOXXOXXXXOXXXXOX",
-			"OOOOXXXXOXXXXOXXXXOXXXXOXXXXOXOXXOXXOOXX",
-			"XXOXXXOOOXOXOXOXXOXXXXOXXXXOXXXXOXXXXOXX"
-		};
-			
-		selectLetter = Random.Range(0, intLetter.Length);
+        string[] intLetter = {
+            "XOOOXOXXXOOXXXOOOOOOOXXXOOXXXOOXXXOOXXXO",
+            "OOOOXOXXXOOXXXOOOOOXOXXXOOXXXOOXXXOOOOOX",
+            "OOOOXOXXXOOXXXOOXXXOOXXXOOXXXOOXXXOOOOOX",
+            "OOOOOOXXXXOXXXXOOOOXOXXXXOXXXXOXXXXOOOOO",
+            "XOOOXOXXXOOXXXXOXXXXOXOOOOXXXOOXXXOXOOOX",
+            "OOOOOXXOXXXXOXXXXOXXXXOXXXXOXXXXOXXOOOOO",
+            "OXXXOOXXOXOXOXXOOXXXOXOXXOXXOXOXXOXOXXXO",
+            "OXXXXOXXXXOXXXXOXXXXOXXXXOXXXXOXXXXOOOOO",
+            "OXXXOOOXXOOXOXOOXOXOOXXOOOXXXOOXXXOOXXXO",
+            "XOOOXOXXXOOXXXOOXXXOOXXXOOXXXOOXXXOXOOOX",
+            "OOOOXOXXXOOXXXOOOOOXOXXXXOXXXXOXXXXOXXXX",
+            "XOOOXOXXXOOXXXXXOOOXXXXXOXXXXOOXXXOXOOOX",
+            "OOOOOXXOXXXXOXXXXOXXXXOXXXXOXXXXOXXXXOXX",
+            "OXXXOXOXOXXOXOXXXOXXXXOXXXOXOXXOXOXOXXXO",
+            "OXXXOXOXOXXOXOXXXOXXXXOXXXXOXXXXOXXXXOXX"
+        };
+
+        string[] chooseShapes = {
+            "XXXXXXXXXXXXXXXOXXXXOXXXOOXOXOOXOXOOOOOO",
+            "XOOOXOXXXOXXXXOXXXOXXXOXXXXOXXXXXXXXXOXX",
+            "XXOXXXOXOXOXXXOXOOOXOXXXOXOXOXXXOXXOOXOO",
+            "XOOOXXXXXOXXXXOXOOOXXXXXOXXXXOXXXXOXOOOX",
+            "OXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOX",
+            "XXOXXXXOXXXXOXXXOOOXOXOXOOOOOOXOOOXXXOXX",
+            "XOOOXOXXXOOXXXOXOXOXOOOOOXOXOXOOOOOXOXOX",
+            "XXXXXXXOOOXXOOOXXOOOXXXOXOXOXXXOOXXXOOXX",
+            "XXOXOOXXOXXXXXXXOOOXXXXXXXOXOOXXXXXOOOOO",
+            "OOXOOOXXXOOXOXOOOXOOOOXOOOXOXOOXXXOOOXOO",
+            "XXXXXXXOXXXXOXXXXOXXXOOOXXXOXXOXOXOOOOOO",
+            "OOOOOOXXXOOXXXOOXOXOOXOXOOXXXOOXXXOOOOOO",
+            "OOOOOXXXOXXXOXXXXXOXOOOOOOXXXXOXXXXOXOOO",
+            "XXXXOXXXOXXXOXXOOXOOOXOXOOXXXOOXXXOOOOOO",
+            "XOXOXOXOOXXXXXXOXOXOOXOXOXXXXXOXOOXXOXOX",
+            "XOXOXOXXXOOXXXOXOOOXOXXXOOOXOOOXXXOXOOOX",
+            "XOXOXXOXOXXXOXXXOXOXOXOXOOXXXOXOXOXXXOXX",
+            "OXOXOOXOXOOXOXOOXOXOOXOXOOXOXOOXOXOOXOXO",
+            "OOOOOXXXXXOOOOOXXXXXOOOOOXXXXXOOOOOXXXXX",
+            "XXOXXXXOXXXXOXXXXOXXXXOXXXXOXXXXXXXXXOXX",
+            "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "XXOXXXXXXXXXOXXXXOXXXXOXXXXOXXXXOXXXXOXX",
+            "OXOXOOOOOOOXOXOOOOOOOXOXOOOOOOOXOXOOOOOO",
+            "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
+            "XOXOXOXOXOXOXOXXXXXXOXOXOOOOOOXOXOXXXOXX",
+            "OOOOOOXXXOOXXXOOXXXOOXXXOOXXXOOXXXOOOOOO",
+            "XXOXXXXXXXXXOXXXXOXXXOXXXOXXXXOXXXOXOOOX",
+            "XOXOXXXOXXXOXOXXXXXXXXXXXXOXOXXXOXXXOXOX",
+            "OOOOOXXOXXXXOXXOOOOOXXOXXOOOOOOXXXOOOOOO",
+            "OOOOXOXXXOOXXXOOOOOXOXXXXOXXXXOXXXXOXXXX",
+            "OXXXOOOXOOOXOXOOXXXOOXXXOOXXXOOXXXOOXXXO",
+            "XXXXXXOXOXXOXOXXXXXXXXXXXXOOOXOXXXOXXXXX",
+            "XXOXXXOXOXOXXXOXXOXXXXOXXOXXXOXOXOXXXOXX",
+            "XXOXXXOXOXOXXXOOOOOOOOOOOOXXXOXOXOXXXOXX",
+            "OOOOXOXXXOOXXXOOOOOXOXXXOOXXXOOXXXOOOOOX",
+            "XXOXXXOOXXOXOXXXXOXXXXOXXXXOXXXXOXXOOOOO",
+            "OXXXOOXXXOOXXXOOXXXOOXXXOOXXXOOXXXOXOOOX",
+            "XXXXXXXXXXXOXOXXOXOXXXXXXOOOOOXOOOXXXXXX",
+            "OXXXOOXXOXOXOXXOOXXXOXOXXOXXOXOXXOXOXXXO",
+            "XXOXXXXOXXXXOXXXXOXXXXOXXOXOXOXOOOXXXOXX",
+            "OOOOXOXXXOOXXXOOOOOXOOXXXOXOXXOXXOXOXXXO",
+            "OOOOOXXOXXXXOXXXXOXXXXOXXXXOXXXXOXXXXOXX",
+            "XXXXXXOXOXXOXOXXXXXXXXXXXOXXXOXOOOXXXXXX",
+            "XOOOXOXXXOOXXXOOXXXOOXXXOOXOXOXOOOXXXXOO",
+            "XOOOXOXXXOOXXXXXOOOXXXXXOXXXXOOXXXOXOOOX",
+            "XXXOXXXOXXXOXXXXXOXXXXXOXXXOXXXOXXXXXOXX",
+            "XOOOXOXOXOOOOOOOXOXOOXOXOOOXOOOXOXOXOOOX",
+            "XOOOXOXXXOOXXXOOOOOOOXXXOOXXXOOXXXOOXXXO",
+            "OOOOOXXXXOXXXOXXXXOXXXOXXXXOXXXOXXXXOXXX",
+            "OXXXOOXXXOOXXXOOOOOOXXXXOXXXXOXXXXOXXXXO",
+            "XXXXXXXXXXXXXXXXXXXOXXXOOXXOOOXOOOOOOOOO",
+            "OOOOOOXXXXOXXXXOOOOXOXXXXOXXXXOXXXXOXXXX",
+            "XOOOXOXXXOOXXXXOXXXXOXOOOOXXXOOXXXOXOOOX",
+            "OOOOOXXXXXXOOOXOXXXOXOOOXXOOOXOXXXOXOOOX",
+            "XOOOXOXXXXOXXXXOXXXXOOOOXOXXXOOXXXOXOOOX",
+            "OOXOOOXOXOXOXOXOXXXOOXXXOXOXOXOXOXOOOXOO",
+            "XOOOXOXXXOOOOOOXXXXXOXXXOXOOOXOXXXOXOOOX",
+            "OOOOOXXXXOXXXOXXXOXXXXOXXXOXXXOXXXXOOOOO",
+            "OXXXOXOXOXXOXOXXXOXXXXOXXXXOXXXXOXXXXOXX",
+            "XOOOXOXXOOOXOXOOXOXOOXOXOOXOXOOOXXOXOOOX",
+            "XOOOXOXXXOOXXXOOXOXOOXOXOOXXXOOXXXOXOOOX",
+            "XXOXXXOXOXXOXOXOXXXOOXXXOXOXOXXOXOXXXOXX",
+            "XOOOXOXXXOOXXXOXOOOOXXXXOXXXXOXXXXOXXXXO",
+            "OOOOOXOXOXXOXOXXOXOXXOXOXXOXOXXOXOXOOOOO",
+            "OOOOOXOXOXOOOOOXOXOXOOOOOXOXOXOOOOOXOXOX",
+            "XOOOXOXXXOOXXXXOXXXXOXXXXOXXXXOXXXOXOOOX",
+            "OXOXOOXOXOXOXOXXXXXXXXXXXXOXOXOXOXOOXOXO",
+            "XXXXOXXXOXXXOXXOOOXXXXOXXXXOXXXXOXXXXOXX",
+            "XXXXXOOOOOOXXXOOOXOOOXXXOOOOOOOXXXOOOOOO",
+            "OOOOOOXXXXOXXXXOOOOXOXXXXOXXXXOXXXXOOOOO",
+            "OXOXOOXOXOXOXOXXOXOXOXOXOOXOXOXOXOXXOXOX",
+            "OOXOOOXXXOOXXXOOXXXOOXXXOOXXXOOXXXOOOXOO",
+            "XXXXXXXOXXXXOXXXOXOXXOXOXOXXXOOXXXOOOOOO",
+            "OXXXOOXXXOOXXXOOOOOOOXXXOOXXXOOXXXOOXXXO",
+            "OOOOOOOXOOOXOXOOXXXOOXXXOOXOXOOOXOOOOOOO",
+            "OOOOOOXXXXOXXXXOOOOXXXXXOXXXXOXXXXOOOOOX",
+            "XXOXXXOOOXOXOXOXXOXXXXOXXOXOXOXOOOXXXOXX",
+            "XXOXXOOOOOOXOXOOXOXOOOOOOXXOXXXXOXXXXOXX",
+            "XXXXXXXOXXXOXOXXXOXXXXOXXXOXOXXXOXXXXXXX",
+            "OXXXOOOXXOOXOXOOXOXOOXXOOOXXXOOXXXOOXXXO",
+            "OXXXOOXXXOOXXXOOXXXOOXXXOOXXXOXOXOXXXOXX",
+            "OOOOXOXXXOOXXXOOXXXOOXXXOOXXXOOXXXOOOOOX",
+            "XOXOXOXOXOOXOXOOXOXOOXOXOOXOXOOXOXOXOXOX",
+            "XOOOXXOXOXXOOOXXOXOXXOXOXXOXOXXOOOXXXOXX",
+            "OXXXOXOXOXXOXOXXXOXXXXOXXXOXOXXOXOXOXXXO",
+            "XXOXXXOOOXOOOOOXXOXXXXOXXXOOOXOOOOOOXXXO",
+            "OXXXXOXXXXOXXXXOXXXXOXXXXOXXXXOXXXXOOOOO",
+            "XOOOXOOXOOOXOXOOOXOOOXOXOOOXOOOXOXOOOOOO",
+            "XOOOXOXXXOXXXXOXXXOXXXOXXXOXXXOXXXXOOOOO",
+            "XOOOXOXXXOOXXXOXOOOXOXXXOOXXXOOXXXOXOOOX",
+            "OOOOOOXOXOOOXOOOXOXOOXOXOOOXOOOXOXOOOOOO",
+            "XOOOXOXXXOOXXXOOXXXOOXXXOOXXXOOXXXOXOOOX",
+            "OXXXOOXXXOOXXXOOXXXOOXOXOOXOXOOXOXOXOXOX",
+            "OXOXOXOXOXXOXOXXXOXXXXOXXXOXOXXOXOXOXOXO",
+            "OOOOOXXOXXXXOXXXXOXXXXOXXXXOXXXXOXXOOOOO",
+            "XXXXXXXOXXXOOOXOXXXOOOOOOOXXXOOXXXOOOOOO",
+            "XXOXXXOXOXXOXOXXXOXXOXXXOXOXOXXXOXXXXOXX",
+            "XXXOXXXXOXOOOOOXXOOXXOXOXOXXOXXXXOXXXXOX",
+            "OOOOXXXXOXXXXOXXXXOXXXXOXXXXOXOXXOXXOOXX",
+            "XXOXXXOOOXOXOXOXXOXXXXOXXXXOXXXXOXXXXOXX"
+        };
+
+        selectLetter = Random.Range(0, intLetter.Length);
 		var onSqrCount = intLetter[selectLetter].Count(x => x == 'O');
 		var offSqrCount = intLetter[selectLetter].Count(x => x == 'X');
 		rnd = RuleSeedable.GetRNG();
@@ -251,7 +255,10 @@ public class ShapesBombs : MonoBehaviour {
 			
 		myShape = intLetter[selectLetter];
 		modLetter = myShape;
-		int[] arrowDirVal = { 0, 1, -5, -1, 5, -4, 6, -6, 4 };
+
+        ArrowScreen.transform.GetComponent<Renderer>().material = BlackMat;
+        NumScreen.transform.GetChild(0).GetComponent<TextMesh>().text = "";
+        int[] arrowDirVal = { 0, 1, -5, -1, 5, -4, 6, -6, 4 };
 		var logArrows = "";
 
 		for (int i = 0; i < chooseArrows.Length; i++) {
@@ -294,7 +301,6 @@ public class ShapesBombs : MonoBehaviour {
 			}
 		}
 
-		arrowCoroutine = StartCoroutine(SetArrowScreen());
 		getCount = ((x, y) => x.Count(z => z == y));
 		countUnlit = (int.Parse(BombInfo.GetSerialNumber()[5].ToString())) % 2 == 1;
 		countHalf = ((Array.FindIndex(intFullLetter, x => x.Equals(moduleLetters[selectLetter]))) % 2 == 0);
@@ -319,10 +325,6 @@ public class ShapesBombs : MonoBehaviour {
 			nowLight.range = 0.01f * lightScalar;
 			nowLight.intensity = 0.0f;
 
-			if (intLetter[selectLetter][i].Equals('O')) {
-				AssignButtonColor(i, false);
-			}
-
 			int j = i;
 
 			ModuleButtons[i].OnInteract += delegate() {
@@ -333,7 +335,7 @@ public class ShapesBombs : MonoBehaviour {
 		}
 
 		NumScreen.OnInteract += delegate() {
-			BombAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
+			BombAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, NumScreen.transform);
 
 			if (arrowCoroutine != null) {
 				StopCoroutine(arrowCoroutine);
@@ -350,7 +352,7 @@ public class ShapesBombs : MonoBehaviour {
 
 			sideButtons[i].transform.GetComponent<Renderer>().material.color = new Color32(239, 228, 176, 255);
 			sideButtons[i].OnInteract += delegate() {
-				BombAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
+				BombAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, sideButtons[j].transform);
 				ModuleSelect.AddInteractionPunch(0.75f);
 
 				switch (j) {
@@ -366,8 +368,10 @@ public class ShapesBombs : MonoBehaviour {
 							if (myShape.Equals(shapeSolution)) {
 								StopAllCoroutines();
 								Debug.LogFormat(@"[Shapes Bombs #{0}] Module solved!", moduleId);
-								BombAudio.PlaySoundAtTransform("CorrectShape", transform);
-								moduleSolved = true;
+                                BombAudio.PlaySoundAtTransform("CorrectShape", transform);
+                                ArrowScreen.transform.GetComponent<Renderer>().material = BlackMat;
+                                NumScreen.transform.GetChild(0).GetComponent<TextMesh>().text = "";
+                                moduleSolved = true;
 								BombModule.HandlePass();
 							} else {
 								var solvedModsEven = (solvedMods % 2 == 0);
@@ -385,7 +389,25 @@ public class ShapesBombs : MonoBehaviour {
 				return false;
 			};
 		}
+
+        BombModule.OnActivate += Activate;
 	}
+
+    void Activate()
+    {
+        string[] choseColor = { "Yellow", "Green", "Cyan", "Blue", "Purple", "White" };
+        ColScreen.transform.GetChild(0).GetComponent<TextMesh>().text = choseColor[Array.IndexOf(randomColors, buttonsColor)];
+        ArrowScreen.transform.GetComponent<Renderer>().material = ArrowScreenMat;
+        arrowCoroutine = StartCoroutine(SetArrowScreen());
+        for (int i = 0; i < ModuleButtons.Length; i++)
+        {
+            buttonLight[i].enabled = true;
+            if (myShape[i].Equals('O'))
+            {
+                AssignButtonColor(i, false);
+            }
+        }
+    }
 
 	void Update() {
 		if (!moduleSolved) {
@@ -433,7 +455,7 @@ public class ShapesBombs : MonoBehaviour {
 			return;
 		}
 
-		BombAudio.PlaySoundAtTransform("PressButton" + (Random.Range(1, 4).ToString()), transform);
+        BombAudio.PlaySoundAtTransform("PressButton" + (Random.Range(1, 4).ToString()), ModuleButtons[buttonPressed].transform);
 		AssignButtonColor(buttonPressed, assignChar);
 	}
 
@@ -469,7 +491,7 @@ public class ShapesBombs : MonoBehaviour {
 			if (myShape[k].Equals('O')) {
 				if (tempShape[k].Equals('X')) {
 					AssignButtonColor(k, false);
-					BombAudio.PlaySoundAtTransform("PressButton4", transform);
+					BombAudio.PlaySoundAtTransform("PressButton4", ModuleButtons[k].transform);
 
 					yield return new WaitForSeconds(0.08f);
 				}
@@ -478,7 +500,7 @@ public class ShapesBombs : MonoBehaviour {
 				buttonLight[k].intensity = 0.0f;
 
 				if (tempShape[k].Equals('O')) {
-					BombAudio.PlaySoundAtTransform("PressButton5", transform);
+					BombAudio.PlaySoundAtTransform("PressButton5", ModuleButtons[k].transform);
 
 					yield return new WaitForSeconds(0.08f);
 				}
@@ -495,7 +517,7 @@ public class ShapesBombs : MonoBehaviour {
 				buttonLight[k].intensity = 0.0f;
 				myShape = myShape.Remove(k, 1);
 				myShape = myShape.Insert(k, "X");
-				BombAudio.PlaySoundAtTransform("PressButton5", transform);
+				BombAudio.PlaySoundAtTransform("PressButton5", ModuleButtons[k].transform);
 
 				yield return new WaitForSeconds(0.08f);
 			}
@@ -540,7 +562,8 @@ public class ShapesBombs : MonoBehaviour {
 	}
 
 	void UpdateSolution() {
-		solvedMods = BombInfo.GetSolvedModuleNames().Count;
+        updating = true;
+        solvedMods = BombInfo.GetSolvedModuleNames().Count;
 
 		if (solvedMods != prevSolvedMods) {
 			var nowHalf = new String((countHalf) ? modLetter.Take(20).ToArray() : modLetter.Skip(20).ToArray());
@@ -548,6 +571,7 @@ public class ShapesBombs : MonoBehaviour {
 		}
 
 		prevSolvedMods = solvedMods;
+        updating = false;
 	}
 
 	void InputLogShape(string passedShape) {
@@ -570,7 +594,7 @@ public class ShapesBombs : MonoBehaviour {
 	}
 
 	#pragma warning disable 414
-	private readonly string TwitchHelpMessage = @"!{0} press A1 B39 C123... (column [A to E] and row [1 to 8] to press [you can input multiple rows in the same column]) | !{0} reset/res/r (resets initial letter) | !{0} empty/emp/e (empties lit squares) | !{0} submit/sub/s (submits current shape) | !{0} colorblind/cb (enables colorblind mode)";
+	private readonly string TwitchHelpMessage = @"!{0} press A1 B39 C123... (column [A to E] and row [1 to 8] to press [you can input multiple rows in the same column]) | !{0} reset/res/r (resets initial letter) | !{0} empty/emp/e (empties lit squares) | !{0} submit/sub/s (submits current shape) | !{0} colorblind/cb (toggles colorblind mode)";
 	#pragma warning restore 414
 
 	KMSelectable[] ProcessTwitchCommand(string command) {
@@ -597,13 +621,30 @@ public class ShapesBombs : MonoBehaviour {
 		}
 
 		if (Regex.IsMatch(command, @"^\s*(colorblind|cb)\s*$")) {
-			ColScreen.SetActive(true);
-
-			return new KMSelectable[0];
+            if (ColScreen.activeSelf)
+			    ColScreen.SetActive(false);
+            else
+                ColScreen.SetActive(true);
+            return new KMSelectable[0];
 		}
 
 		return (Regex.IsMatch(command, @"^\s*(reset|res|r)\s*$")) ? new[] { ResetButton } :
 			(Regex.IsMatch(command, @"^\s*(empty|emp|e)\s*$")) ? new[] { EmptyButton } :
 			(Regex.IsMatch(command, @"^\s*(submit|sub|s)\s*$")) ? new[] { SubmitButton } : null;
 	}
+
+    IEnumerator TwitchHandleForcedSolve()
+    {
+        yield return new WaitForSeconds(0.0001f);
+        while (nowCoroutine != null || subCoroutine != null || updating) { yield return true; yield return new WaitForSeconds(0.1f); }
+        for (int i = 0; i < shapeSolution.Length; i++)
+        {
+            if (myShape[i] != shapeSolution[i])
+            {
+                ModuleButtons[i].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+        SubmitButton.OnInteract();
+    }
 }
